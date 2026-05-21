@@ -4,13 +4,17 @@
 $username = [
     'name' => 'username',
     'id' => 'username',
-    'class' => 'form-control'
+    'class' => 'form-control',
+    'required' => true,
+    'minlength' => 6
 ];
 
 $password = [
     'name' => 'password',
     'id' => 'password',
-    'class' => 'form-control'
+    'class' => 'form-control',
+    'required' => true,
+    'minlength' => 7
 ];
 ?>
 <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">

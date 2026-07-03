@@ -74,15 +74,30 @@
       endif;
       ?>
       <tr>
-          <td colspan="2"></td>
-          <td>Subtotal</td>
-          <td><?= number_to_currency($total, 'IDR') ?></td>
-      </tr>
-      <tr>
-          <td colspan="2"></td>
-          <td>Total</td>
-          <td><span id="total"><?= number_to_currency($total, 'IDR') ?></span></td>
-      </tr>
+            <td colspan="2"></td>
+            <td>Subtotal</td>
+            <td><?= number_to_currency($total, 'IDR') ?></td>
+        </tr>
+
+        <tr>
+            <td colspan="2"></td>
+            <td style="color:red;">
+                Diskon (<?= $persen ?>%)
+            </td>
+            <td style="color:red;">
+                - <?= number_to_currency($diskon, 'IDR') ?>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2"></td>
+            <td>Total</td>
+            <td>
+                <span id="total">
+                    <?= number_to_currency($total - $diskon, 'IDR') ?>
+                </span>
+            </td>
+        </tr>
   </tbody>
 </table>
     </div>
@@ -93,14 +108,14 @@
 $(document).ready(function() {
     let ongkir = 0;
     let subtotal = <?= $total ?>;
+    let diskon = <?= $diskon ?>;
     hitungTotal();
 
     function hitungTotal() {
-        let total = subtotal + ongkir;
+        let total = subtotal - diskon + ongkir;
 
         $("#ongkir").val(ongkir);
         $("#total").text(`IDR ${total.toLocaleString('id-ID')}`);
-        $("#total_harga").val(total);
     }
 
 	$('#kelurahan').select2({

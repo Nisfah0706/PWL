@@ -17,10 +17,11 @@ class TransaksiController extends BaseController
 
     public function __construct()
     {
-        helper(['number', 'form']);
+        helper(['number', 'form', 'diskon']);
+
         $this->cart = service('cart');
         $this->transactionModel = new TransactionModel();
-        $this->transactionDetailModel = new TransactionDetailModel(); 
+        $this->transactionDetailModel = new TransactionDetailModel();
     }
 
     public function index()
@@ -100,9 +101,15 @@ class TransaksiController extends BaseController
 
     public function checkout()
     {  
+        $total = $this->cart->total();
+
+        $hasilDiskon = hitung_diskon($total);
+
         $data = [
-            'items' => $this->cart->contents(),
-            'total' => $this->cart->total() 
+            'items'   => $this->cart->contents(),
+            'total'   => $total,
+            'diskon'  => $hasilDiskon['diskon'],
+            'persen'  => $hasilDiskon['persen'] 
         ];
 
         return view('v_checkout', $data);
@@ -168,18 +175,27 @@ class TransaksiController extends BaseController
         $db->transStart(); 
 
         $subtotal = 0;
+
         foreach ($cartItems as $item) {
             $subtotal += $item['qty'] * $item['price'];
         }
 
+        $hasilDiskon = hitung_diskon($subtotal);
+
+        $persenDiskon = $hasilDiskon['persen'];
+        $diskon = $hasilDiskon['diskon'];
+
         $ongkir = (int) $this->request->getPost('ongkir');
+
+        $grandTotal = $subtotal - $diskon + $ongkir;
 
         $transaction = [
             'username'    => $this->request->getPost('username'),
             'alamat'      => $this->request->getPost('alamat'),
             'ongkir'      => $ongkir,
-            'total_harga' => $subtotal + $ongkir,
-            'status'      => 0, 
+            'diskon'      => $diskon,
+            'total_harga' => $grandTotal,
+            'status'      => 0,
         ];
 
         // insert transaction
@@ -190,14 +206,18 @@ class TransaksiController extends BaseController
 
         $transactionId = $this->transactionModel->getInsertID();
 
-        // insert transaction detail
+       // insert transaction detail
         foreach ($cartItems as $item) {
+
+            $subtotalItem = $item['qty'] * $item['price'];
+            $diskonItem = ($persenDiskon / 100) * $subtotalItem;
+
             $this->transactionDetailModel->insert([
                 'transaction_id' => $transactionId,
                 'product_id'     => $item['id'],
                 'jumlah'         => $item['qty'],
-                'diskon'         => 0,
-                'subtotal_harga' => $item['qty'] * $item['price'] 
+                'diskon'         => $diskonItem,
+                'subtotal_harga' => $subtotalItem
             ]);
         }
 

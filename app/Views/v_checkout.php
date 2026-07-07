@@ -61,7 +61,6 @@
                 'name'=>'voucher_code',
                 'id'=>'voucher_code',
                 'class'=>'form-control',
-                'placeholder'=>'PROMO2025 / PROMO2026 / AKHIRTAHUN'
             ]) ?>
             <small class="text-muted">
                 Tersedia: PROMO2025 (10%), PROMO2026 (15%), AKHIRTAHUN (25%)
@@ -160,11 +159,7 @@ $(function(){
     function hitungTotal(){
 
         let voucher = $("#voucher_code").val().trim().toUpperCase();
-
-        // STEP 1: after diskon member
         let afterMember = subtotal - diskonMember;
-
-        // STEP 2: voucher dari after member (INI FIX UTAMA)
         let diskonVoucher = 0;
 
         switch(voucher){
@@ -181,15 +176,12 @@ $(function(){
 
         let afterVoucher = afterMember - diskonVoucher;
 
-        // STEP 3: biaya jasa
         let biayaJasa = subtotal <= 10000000
             ? subtotal * 0.01
             : subtotal * 0.02;
 
-        // STEP 4: free mouse
         let freeMouse = subtotal > 15000000 ? 150000 : 0;
 
-        // STEP 5: grand total
         let grandTotal =
             afterVoucher
             + biayaJasa

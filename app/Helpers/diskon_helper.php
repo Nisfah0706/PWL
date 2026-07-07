@@ -1,8 +1,5 @@
 <?php
 
-// =========================
-// DISKON OTOMATIS (KUIS)
-// =========================
 if (!function_exists('hitung_diskon')) {
 
     function hitung_diskon($total)
@@ -30,10 +27,6 @@ if (!function_exists('hitung_diskon')) {
     }
 }
 
-
-// =========================
-// DISKON VOUCHER
-// =========================
 if (!function_exists('hitung_diskon_voucher')) {
 
     function hitung_diskon_voucher($subtotal, $code)
@@ -58,10 +51,6 @@ if (!function_exists('hitung_diskon_voucher')) {
     }
 }
 
-
-// =========================
-// BIAYA JASA
-// =========================
 if (!function_exists('hitung_biaya_jasa')) {
 
     function hitung_biaya_jasa($subtotal)
@@ -78,10 +67,6 @@ if (!function_exists('hitung_biaya_jasa')) {
     }
 }
 
-
-// =========================
-// FREE MOUSE PROMO
-// =========================
 if (!function_exists('hitung_free_mouse')) {
 
     function hitung_free_mouse($subtotal)
